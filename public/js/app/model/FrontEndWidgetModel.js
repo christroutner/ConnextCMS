@@ -4,14 +4,14 @@ define([
 	'backbone_0.9.2',
 ], function ($, _, Backbone) {
 
-  
+
   //Create local Model to represent the Post model I'll retrieve from the server.
   var FrontEndWidgetModel = Backbone.Model.extend({
 
     idAttribute: "_id",  //Map the Model 'id' to the '_id' assigned by the server.
 
     //When initialized this.id is undefined. This url gets fixed in the initialize() function.
-    //url: 'http://'+global.serverIp+':'+global.serverPort+'/api/post/'+this.id+'/update', 
+    //url: 'http://'+global.serverIp+':'+global.serverPort+'/api/post/'+this.id+'/update',
     url: '',
 
     //Initialize is called upon the instantiation of this model. This function is executed once
@@ -19,12 +19,12 @@ define([
     initialize: function() {
       //This function is often used for debugging, so leave it here.
       //this.on('change', function() {
-        //debugger;        
+        //debugger;
       //  this.save();
       //});
       //debugger;
 
-      this.url = '/api/frontendwidget/'+this.id+'/update'; 
+      this.url = '/api/frontendwidget/'+this.id+'/update';
     },
 
     defaults: {
@@ -35,15 +35,15 @@ define([
       'imgUrlArray': [],
       'urlArray': []
     },
-    
-    refreshWidget: false, 
-    
+
+    refreshWidget: false,
+
     //Override the default Backbone save() function with one that our API understands.
     save: function() {
       //debugger;
-      
+
       var thisModel = this;
-      
+
       $.getJSON(this.url, this.attributes, function(data) {
         //Regardless of success or failure, the API returns the JSON data of the model that was just updated.
         //debugger;
@@ -55,24 +55,24 @@ define([
           global.frontEndWidgetCollection.refreshWidget = true;
           global.frontEndWidgetCollection.fetch();
         }
-        
+
       }).fail( function(jqxhr, textStatus, error) {
         //This is the error handler.
-        //debugger;
-        
-        if(jqxhr.responseJSON.detail == "invalid csrf") {
-          global.modalView.errorModal('Update failed due to a bad CSRF token. Please log out and back in to refresh your CSRF token.');
-          return;
-        } else {
+        debugger;
+
+        //if(jqxhr.responseJSON.detail == "invalid csrf") {
+        //  global.modalView.errorModal('Update failed due to a bad CSRF token. Please log out and back in to refresh your CSRF token.');
+        //  return;
+        //} else {
           log.push('Error while trying FrontEndWidgetModel.save(). Most likely due to communication issue with the server.');
           sendLog();
           console.error('Communication error with server while execute FrontEndWidgetModel.save()');
-        }
+        //}
       });
 
     }
   });
-  
+
   return FrontEndWidgetModel;
 
 });
